@@ -1,6 +1,6 @@
 [package]
 name = "nokhwa"
-version = "0.10.4"
+version = "0.10.7"
 authors = ["l1npengtul <l1npengtul@protonmail.com>"]
 edition = "2021"
 description = "A Simple-to-use, cross-platform Rust Webcam Capture Library"
@@ -19,7 +19,7 @@ exclude = ["examples/jscam"]
 crate-type = ["cdylib", "rlib"]
 
 [features]
-default = ["flume", "decoding"]
+default = ["decoding"]
 serialize = ["serde", "nokhwa-core/serialize"]
 decoding = ["nokhwa-core/mjpeg"]
 input-avfoundation = ["nokhwa-bindings-macos"]
@@ -33,11 +33,12 @@ input-v4l-no-arena-buffer = ["nokhwa-bindings-linux/no-arena-buffer"]
 input-native = ["input-avfoundation", "input-v4l", "input-msmf"]
 # Re-enable it once soundness has been proven + mozjpeg is updated to 0.9.x
 # input-uvc = ["uvc", "uvc/vendor", "usb_enumeration", "lazy_static"]
-input-opencv = ["opencv", "opencv/videoio", "opencv/rgb", "rgb", "nokhwa-core/opencv-mat"]
+input-opencv = ["opencv", "opencv/videoio", "opencv/rgb", "opencv/clang-runtime", "nokhwa-core/opencv-mat"]
 input-jscam = ["web-sys", "js-sys", "wasm-bindgen-futures", "wasm-bindgen", "wasm-rs-async-executor"]
 output-wgpu = ["wgpu", "nokhwa-core/wgpu-types"]
 #output-wasm = ["input-jscam"]
-output-threaded = ["parking_lot"]
+output-threaded = ["parking_lot", "camera-sync-impl"]
+camera-sync-impl = []
 small-wasm = []
 docs-only = ["input-native", "input-opencv", "input-jscam","output-wgpu", "output-threaded", "serialize"]
 docs-nolink = ["nokhwa-core/docs-features"]
@@ -45,8 +46,9 @@ docs-features = []
 test-fail-warning = []
 
 [dependencies]
-thiserror = "1.0"
+thiserror = "2.0"
 paste = "1.0"
+flume = "0.11"
 
 [dependencies.nokhwa-core]
 version = "0.1"
@@ -56,28 +58,20 @@ path = "nokhwa-core"
 version = "1.0"
 optional = true
 
-[dependencies.flume]
-version = "0.10"
-optional = true
-
 [dependencies.image]
-version = "0.24"
+version = "0.25"
 default-features = false
-
-[dependencies.v4l]
-version = "0.13"
-optional = true
 
 [dependencies.usb_enumeration]
 version = "0.2"
 optional = true
 
 [dependencies.wgpu]
-version = "0.16"
+version = "23"
 optional = true
 
 [dependencies.opencv]
-version = "0.81"
+version = "0.93"
 default-features = false
 optional = true
 
